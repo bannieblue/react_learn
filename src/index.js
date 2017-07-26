@@ -184,7 +184,7 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div>
-          <span>请选择规格</span>
+          <span>请选择行列数：</span>
           <select onChange={(event)=>this.handleChange(event)}>
             <option>3</option>
             <option>4</option>
