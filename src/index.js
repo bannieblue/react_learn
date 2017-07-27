@@ -43,12 +43,13 @@ function calculateWinner(squares,rows){
     const a = squares[row[0]];
     let flag = true;
     for(let i=1;i<row.length;i++){
-     if(a !== squares[row[i]]){
+     if(a==null || a !== squares[row[i]]){
        flag = false;
+      //  break;
      }
     }
     if(flag){
-      return a;
+      return {"winner":a,"highlight":row};
     }
   }
   return null;
@@ -56,8 +57,9 @@ function calculateWinner(squares,rows){
 
 //方块组件 返回一个方块
 function Square(props){
+  // console.log(props.color);
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className={"square " +props.color} onClick={props.onClick} >
             {props.value}
         </button>
     )
@@ -66,10 +68,11 @@ function Square(props){
 //白板组件 返回一个九宫格
 class Board extends React.Component {
   //返回一行方块
-  renderSquare(rows,index) {
+  renderSquare(rows,index,highlight) {
+    // console.log(highlight);
     let list = rows.map((x)=>{
       return (
-      <Square key={x}
+      <Square key={x} color={highlight?(highlight.includes(x)?"highlight":null):null}
         value={this.props.squares[x]} 
         onClick={()=>this.props.onClick(x)}
       />
@@ -84,6 +87,7 @@ class Board extends React.Component {
 
   render() {
     let rows = this.props.rowsNumber;
+    const highlight = this.props.highlight;
     let basicArray=[];
     let lines=[];
     for(let i=0;i<rows;i++){
@@ -96,7 +100,7 @@ class Board extends React.Component {
     }
 
     let renderBoard = lines.map((arr,index)=>{
-      return this.renderSquare(arr,index);
+      return this.renderSquare(arr,index,highlight);
     });
 
     return (
@@ -148,7 +152,6 @@ class Game extends React.Component {
   }
 
   handleChange(event){
-    console.log(event.target.value);
     let rows = event.target.value;
     this.setState({
         history:[{
@@ -164,10 +167,11 @@ class Game extends React.Component {
     const rowsNumber = this.state.rowsNumber;
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares,rowsNumber);
+    const result = calculateWinner(current.squares,rowsNumber);
+    // const winner = result.winner;
     let status;
-    if(winner){
-      status = "Winner is "+winner
+    if(result){
+      status = "Winner is "+result.winner
     }else{
       status = 'Next player: '+ (this.state.xIsNext ? "X":"O");
     }
@@ -184,22 +188,22 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div>
-          <span>请选择行列数：</span>
+          <span>please select the game mode：</span>
           <select onChange={(event)=>this.handleChange(event)}>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
+            <option value="3">3*3</option>
+            <option value="4">4*4</option>
+            <option value="5">5*5</option>
+            <option value="6">6*6</option>
+            <option value="7">7*7</option>
+            <option value="8">8*8</option>
+            <option value="9">9*9</option>
           </select>
         </div>
         <div className="game-board">
-          <Board squares={current.squares} onClick={(i)=>this.handleClick(i)} rowsNumber= {rowsNumber} />
+          <Board squares={current.squares} onClick={(i)=>this.handleClick(i)} rowsNumber= {rowsNumber} highlight ={result?result.highlight:null}/>
         </div>
         <div className="game-info">
-          <div>{ status }</div>
+          <div className={result?"highlight":null}>{ status }</div>
           <ol>{moves}</ol>
         </div>
       </div>

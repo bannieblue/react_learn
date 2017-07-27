@@ -45,6 +45,15 @@ ol, ul {
   flex-direction: row;
 }
 
+.game-board,
 .game-info {
   margin-left: 20px;
+}
+
+.highlight{
+  background-color: #66ff66;
+  color: #BF3EFF;
+}
+.game-info .highlight{
+  font-weight: bold;
 }
