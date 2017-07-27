@@ -45,7 +45,7 @@ function calculateWinner(squares,rows){
     for(let i=1;i<row.length;i++){
      if(a==null || a !== squares[row[i]]){
        flag = false;
-      //  break;
+       break;
      }
     }
     if(flag){
